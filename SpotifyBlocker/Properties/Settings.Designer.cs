@@ -26,12 +26,12 @@ namespace SpotifyBlocker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string BlockedArtist {
+        public string BlockedArtists {
             get {
-                return ((string)(this["BlockedArtist"]));
+                return ((string)(this["BlockedArtists"]));
             }
             set {
-                this["BlockedArtist"] = value;
+                this["BlockedArtists"] = value;
             }
         }
         

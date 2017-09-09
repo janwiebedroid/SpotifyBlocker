@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SpotifyBlocker"
         ResizeMode="NoResize"
         mc:Ignorable="d"
-        Title="SpotifyBlocker" Height="548.112" Width="611.38">
+        Title="SpotifyBlocker" Height="601.112" Width="611.38">
     <Window.DataContext>
         <local:MainWindowViewModel></local:MainWindowViewModel>
     </Window.DataContext>
@@ -33,35 +33,34 @@
         <Label Grid.Column="0" Grid.Row="1" Name="LblArtistTitle" Content="Artist:" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,40"/>
 
         <DockPanel Grid.Row="1" Grid.Column="2" LastChildFill="True">
-            <TextBox x:Name="TextBox" Height="23" HorizontalAlignment="Stretch" Text="{Binding Artist, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}"  />
+            <TextBox x:Name="TextBox" Height="23" HorizontalAlignment="Stretch" Text="{Binding Artist.Name, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}"  />
         </DockPanel>
 
-        <Button x:Name="Button" Content="Add" Command="{Binding AddCommand}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="21,43"/>
+        <Button x:Name="Button" Content="Add" Command="{Binding AddArtistCommand}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="21,43"/>
 
-        
+
         <Label Grid.Column="0" Grid.Row="2" x:Name="LblSongsList" Content="Blocked artists:" VerticalAlignment="Top"  Grid.ColumnSpan="2" />
-        <ListBox x:Name="ArtistsList" HorizontalAlignment="Stretch" Padding="0,0,0,0" Height="130" SelectedItem="{Binding SelectedArtistItem}" ItemsSource="{Binding BlockedArtists}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" >
+        <ListBox x:Name="ArtistsList" HorizontalAlignment="Stretch" Padding="0,0,0,0" Height="130" SelectedItem="{Binding Artist.SelectedItem}" ItemsSource="{Binding Artist.Blocked}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" >
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding DeleteCommand}" Header="Delete"></MenuItem>
+                    <MenuItem Command="{Binding DeleteArtistCommand}" Header="Delete"></MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
-       
-        <Button x:Name="DeleteArtistButton" Content="Delete" Command="{Binding DeleteCommand}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22,38,23,60" Height="26"/>
+        <TextBox x:Name="TbArtist" Height="23" HorizontalAlignment="Stretch" Text="{Binding Song.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,49,0,51" Grid.Row="3" Grid.Column="2"  />
+        <Button x:Name="DeleteArtistButton" Content="Delete" Command="{Binding DeleteArtistCommand}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22,38,23,60" Height="26"/>
 
-        <Label Grid.Column="0" Grid.Row="3" x:Name="LblSongTitle" Content="Song:" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,49,0,48"/>
-        <TextBox x:Name="TbArtist" Height="23" HorizontalAlignment="Stretch" Text="{Binding Song, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,49,0,51" Grid.Row="3" Grid.Column="2"  />
-        <Button x:Name="BtnAddArtist" Content="Add" Command="{Binding AddCommand}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22.5,51.5"/>
-        <ListBox  HorizontalAlignment="Stretch" Padding="0,0,0,0" Height="99" SelectedItem="{Binding SelectedArtistItem}" ItemsSource="{Binding BlockedSongs}" Grid.Row="4" Grid.Column="2" VerticalAlignment="Top" >
+        <Label Grid.Column="0" Grid.Row="3" x:Name="LblSongTitle" Content="Song:" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <ListBox  HorizontalAlignment="Stretch" SelectedIndex="0" Padding="0,0,0,0" Height="99" SelectedItem="{Binding Song.SelectedItem}" ItemsSource="{Binding Song.Blocked}" Grid.Row="4" Grid.Column="2" VerticalAlignment="Top" >
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding DeleteCommand}" Header="Delete"/>
+                    <MenuItem Command="{Binding DeleteSongCommand}" Header="Delete"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
         <Label Grid.Column="0" Grid.Row="4" x:Name="LblArtistTitleCopy_Copy" Content="Blocked songs:" VerticalAlignment="Top"  Grid.ColumnSpan="2" Margin="0,27,0,0" />
-        <Button x:Name="BtnDeleteSong" Content="Delete" Command="{Binding DeleteCommand}" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22,48,23,52" Height="24"/>
+        <Button x:Name="BtnDeleteSong" Content="Delete" Command="{Binding DeleteSongCommand}" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22,48,23,52" Height="24"/>
+        <Button x:Name="BtnAddSong" Content="Add" Command="{Binding AddSongCommand}" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="76" Margin="22,52,23,51"/>
 
 
 

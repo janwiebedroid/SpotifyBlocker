@@ -8,137 +8,109 @@ using System.Threading;
 using System.Timers;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using SpotifyBlocker.Models;
 using Timer = System.Timers.Timer;
 
 namespace SpotifyBlocker
 {
     internal class MainWindowViewModel : INotifyPropertyChanged
     {
-        private ICommand _updateCommand;
-        private ICommand _deleteCommand;
-        private string _artist;
-        private string _song;
-        private ObservableCollection<string> _blockedArtists;
-        private ObservableCollection<string> _blockedSongs;
+        private ICommand _updateArtistCommand;
+        private ICommand _deleteArtistCommand;
+        private ICommand _updateSongCommand;
+        private ICommand _deleteSongCommand;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        ///TODO!!! Create base class for blocked song etc. derive from base class per kind
-        public ObservableCollection<string> BlockedArtists
-        {
-            get { return _blockedArtists; }
-            set
-            {
-                _blockedArtists = value;
-                OnPropertyChanged("BlockedArtists");
-            }
-        }
-
-        public ObservableCollection<string> BlockedSongs
-        {
-            get { return _blockedSongs; }
-            set
-            {
-                _blockedSongs = value;
-                OnPropertyChanged("BlockedSongs");
-            }
-        }
-
-        /// <summary>
-        /// Name of the current artist (can be customized)
-        /// </summary>
-        public string Artist
-        {
-            get
-            {
-                return _artist;
-            }
-            set
-            {
-                _artist = value;
-                OnPropertyChanged("Artist");
-            }
-
-        }
-
-        /// <summary>
-        /// Name of the current song (can't be customized)
-        /// </summary>
-        public string Song
-        {
-            get
-            {
-                return _song;
-            }
-            set
-            {
-                _song = value;
-                OnPropertyChanged("Song");
-            }
-        }
+        ///TODO Create base class for blocked song etc. derive from base class per kind
 
         public SpotifyAPI.SpotifyAPI API { get; set; }
 
-        /// <summary>
-        /// Command to add the artist to the list
-        /// </summary>
-        public ICommand AddCommand
-        {
-            get
-            {
-                return _updateCommand ??
-                       (_updateCommand = new RelayCommand(p => { UpdateBlockedArtists(); }, p => true));
-            }
-            set
-            {
-                _updateCommand = value;
-            }
-        }
+
 
         /// <summary>
         /// Command to add the artist to the list
         /// </summary>
-        public ICommand DeleteCommand
+        public ICommand AddArtistCommand
         {
             get
             {
-                return _deleteCommand ??
-                       (_deleteCommand = new RelayCommand(p => { DeleteBlockedArtists(); }, p => true));
+                return _updateArtistCommand ??
+                       (_updateArtistCommand = new RelayCommand(p => { Artist.Add(); }, p => true));
             }
             set
             {
-                _deleteCommand = value;
+                _updateArtistCommand = value;
             }
         }
 
-        public string SelectedArtistItem { get; set; }
-
-        private void DeleteBlockedArtists()
+        /// <summary>
+        /// Command to add the artist to the list
+        /// </summary>
+        public ICommand DeleteArtistCommand
         {
-            Properties.Settings.Default.BlockedArtist =
-                Properties.Settings.Default.BlockedArtist.Replace($";{SelectedArtistItem}", "");
-            Properties.Settings.Default.Save();
-
-            BlockedArtists.Remove(SelectedArtistItem);
+            get
+            {
+                return _deleteArtistCommand ??
+                       (_deleteArtistCommand = new RelayCommand(p => { Artist.Delete(); }, p => true));
+            }
+            set
+            {
+                _deleteArtistCommand = value;
+            }
         }
+
+        /// <summary>
+        /// Command to add the artist to the list
+        /// </summary>
+        public ICommand AddSongCommand
+        {
+            get
+            {
+                return _updateSongCommand ??
+                       (_updateSongCommand = new RelayCommand(p => { Song.Add(); }, p => true));
+            }
+            set
+            {
+                _updateSongCommand = value;
+            }
+        }
+
+        /// <summary>
+        /// Command to add the artist to the list
+        /// </summary>
+        public ICommand DeleteSongCommand
+        {
+            get
+            {
+                return _deleteSongCommand ??
+                       (_deleteSongCommand = new RelayCommand(p => { Song.Delete(); }, p => true));
+            }
+            set
+            {
+                _deleteSongCommand = value;
+            }
+        }
+
+        public BaseModel Artist { get; }
+
+        public BaseModel Song { get; }
+
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindowViewModel()
         {
-            List<string> blockedArtists = Properties.Settings.Default.BlockedArtist.Split(';').ToList();
-            blockedArtists.Remove(blockedArtists.First());
-            _blockedArtists = new ObservableCollection<string>(blockedArtists);
-
-            List<string> blockedSongs = Properties.Settings.Default.BlockedSongs.Split(';').ToList();
-            blockedSongs.Remove(blockedSongs.First());
-
-            _blockedSongs = new ObservableCollection<string>(blockedSongs);
-
             API = new SpotifyAPI.SpotifyAPI();
             API.InitApi();
 
-            Artist = API.SongInfo.ArtistName;
+            Artist = new BaseModel("BlockedArtists");
+            Song = new BaseModel("BlockedSongs");
+
+            Artist.Name = API.SongInfo.ArtistName;
+            Song.Name = API.SongInfo.SongName;
 
             Timer timer = new Timer { Interval = 1000 };
             timer.Elapsed += new ElapsedEventHandler(TimerEvent);
@@ -149,23 +121,24 @@ namespace SpotifyBlocker
         private void TimerEvent(object sender, EventArgs e)
         {
             API.InitApi();
-            Artist = API.SongInfo.ArtistName;
+            Artist.Name = API.SongInfo.ArtistName;
+            Song.Name = API.SongInfo.SongName;
 
 
             //Set the artist value to the API value (if not yet set)
-            if (Artist != API.SongInfo.ArtistName)
+            if (Artist.Name != API.SongInfo.ArtistName)
             {
-                Artist = API.SongInfo.ArtistName;
+                Artist.Name = API.SongInfo.ArtistName;
             }
 
             // Same for the song
 
-            if (Song != API.SongInfo.SongName)
+            if (Song.Name != API.SongInfo.SongName)
             {
-                Song = API.SongInfo.SongName;
+                Song.Name = API.SongInfo.SongName;
             }
 
-            foreach (string artist in BlockedArtists)            
+            foreach (string artist in Artist.Blocked)            
             {
                 if (API.SongInfo.ArtistName == artist)
                 {
@@ -173,7 +146,7 @@ namespace SpotifyBlocker
                 }
             }
 
-            foreach (string song in BlockedSongs) {
+            foreach (string song in Song.Blocked) {
                 if (API.SongInfo.SongName == song)
                 {
                     API.NextTrack();
@@ -181,33 +154,9 @@ namespace SpotifyBlocker
                 
             }
 
-
+            OnPropertyChanged("Song");
+            OnPropertyChanged("Artist");
             
-        }
-
-
-        /// <summary>
-        /// Update the blocked artists
-        /// </summary>
-        private void UpdateBlockedArtists()
-        {
-            if (string.IsNullOrEmpty(Artist))
-            {
-                return;
-            }
-            Properties.Settings.Default.BlockedArtist = $"{Properties.Settings.Default.BlockedArtist};{Artist}";
-            Properties.Settings.Default.Save();
-            BlockedArtists.Add(Artist);
-        }
-
-        private void UpdateBlockedSongs()
-        {
-            if (string.IsNullOrEmpty(Song)) {
-                return;
-            }
-            Properties.Settings.Default.BlockedSongs = $"{Properties.Settings.Default.BlockedSongs};{Song}";
-            Properties.Settings.Default.Save();
-            BlockedSongs.Add(Artist);
         }
 
         protected void OnPropertyChanged(string propertyName)
