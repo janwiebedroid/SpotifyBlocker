@@ -13,4 +13,7 @@ Have you ever wondered where in Spotify you can find the feature to completely b
 - Start the appliction when windows starts.
 - Other idea's are welcome!
 
+### Download
+[Download](https://github.com/janwiebedroid/SpotifyBlocker/blob/master/build/SpotifyBlocker.exe?raw=true)
+
 ![Application Screenshot](build/Screenshot.png?raw=true "Application screenshot")
