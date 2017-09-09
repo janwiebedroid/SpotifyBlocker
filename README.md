@@ -12,3 +12,5 @@ Have you ever wondered where in Spotify you can find the feature to completely b
 - Easy blocking by implementing a button in the system tray
 - Start the appliction when windows starts.
 - Other idea's are welcome!
+
+![Alt text](master/build/Screenshot.png?raw=true "Application screenshot")
