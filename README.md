@@ -14,6 +14,8 @@ Have you ever wondered where in Spotify you can find the feature to completely b
 - Other idea's are welcome!
 
 ### Download
+Unfortunately chrome decided to mark this tool as unsafe. Currently looking for a solution.
+
 [Download](https://github.com/janwiebedroid/SpotifyBlocker/blob/master/build/SpotifyBlocker.exe?raw=true)
 
 ![Application Screenshot](build/Screenshot.png?raw=true "Application screenshot")
